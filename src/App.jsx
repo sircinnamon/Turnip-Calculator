@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { useLocalStorage } from "react-use";
 import { CssBaseline, ThemeProvider, Container } from "@material-ui/core";
 import theme from "./theme";
@@ -8,7 +8,18 @@ import Title from "./Title";
 import Footer from "./Footer";
 
 const App = () => {
-  const [filters, onChange] = useLocalStorage("filters", []);
+
+  let filters, onChange;
+  if(window.location.hash.length > 1){
+    let changeState;
+    [filters, changeState] = useState(atob(window.location.hash.split("#")[1]).split("/"))
+    onChange = (newFilters) => {
+      changeState(newFilters);
+      window.location.hash = '#'+btoa(newFilters.join("/").replace(/\/+$/, ""));
+    }
+  } else {
+    [filters, onChange] = useLocalStorage("filters", []);
+  }
 
   const sanitizedInputFilters = useMemo(
     () =>
