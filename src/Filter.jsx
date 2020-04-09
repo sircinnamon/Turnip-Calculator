@@ -25,6 +25,42 @@ const useButtonStyles = makeStyles((theme) => ({
 
 const ClearButton = (props) => {
   const classes = useButtonStyles();
+  let passedprops = {...props};
+  delete passedprops.clearImport
+  delete passedprops.clearSaved
+  delete passedprops.importMode
+  if(props.importMode){
+    return (
+      <Button
+        classes={classes}
+        disableRipple
+        size="small"
+        variant="contained"
+        onClick={props.clearImport}
+        {...passedprops}
+      >
+        {i18n.t("Clear Imported Data!")}
+      </Button>
+    );
+  } else {
+    return (
+      <Button
+        classes={classes}
+        disableRipple
+        size="small"
+        variant="contained"
+        onClick={props.clearSaved}
+        {...passedprops}
+      >
+        {i18n.t("Clear All Data!")}
+      </Button>
+    );
+  }
+};
+
+const DisableImportButton = (props) => {
+  if(!props.importMode){return;}
+  const classes = useButtonStyles();
   return (
     <Button
       classes={classes}
@@ -33,7 +69,7 @@ const ClearButton = (props) => {
       variant="contained"
       {...props}
     >
-      {i18n.t("Clear All Data!")}
+      {i18n.t("Close Import")}
     </Button>
   );
 };
@@ -45,7 +81,7 @@ const names = [
     .reduce((curr, day) => [...curr, ...[`${day} ${i18n.t('AM')}`, `${day} ${i18n.t('PM')}`]], []),
 ];
 
-const Filter = ({ filters, onChange }) => {
+const Filter = ({ filters, onChange, importMode, clearImport }) => {
   const handleChange = useCallback(
     (index) => ({
       target: {
@@ -124,8 +160,12 @@ const Filter = ({ filters, onChange }) => {
       </FormGroup>
       <Box alignSelf="flex-end" mt={-2}>
         <ClearButton
-          onClick={() => {
+          clearSaved={() => {
             onChange([]);
+          }}
+          importMode={importMode}
+          clearImport={() => {
+            clearImport([]);
           }}
         />
       </Box>

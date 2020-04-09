@@ -37,12 +37,14 @@ const App = () => {
     importChange(newFilters);
     window.location.hash = wrapHash(newFilters)
   }
-  if(window.location.hash){
+  const [importMode, setImportMode] = useState((window.location.hash.length>0))
+  if(importMode){
     filters = importFilters;
     onChange = hashChange;
   } else {
     filters = storedFilters;
     onChange = storedChange;
+    window.location.hash = "";
   }
 
   const sanitizedInputFilters = useMemo(
@@ -73,7 +75,7 @@ const App = () => {
         <CssBaseline />
         <Container maxWidth="md">
           <Title />
-          <Filter filters={sanitizedInputFilters} onChange={onChange} />
+          <Filter filters={sanitizedInputFilters} onChange={onChange} importMode={importMode} clearImport={()=>{setImportMode(false)}}/>
           <Chart filter={sanitizedFilters} />
           <Footer />
         </Container>
