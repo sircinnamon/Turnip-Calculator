@@ -10,15 +10,39 @@ import Footer from "./Footer";
 const App = () => {
 
   let filters, onChange;
-  if(window.location.hash.length > 1){
-    let changeState;
-    [filters, changeState] = useState(atob(window.location.hash.split("#")[1]).split("/"))
-    onChange = (newFilters) => {
-      changeState(newFilters);
-      window.location.hash = '#'+btoa(newFilters.join("/").replace(/\/+$/, ""));
+  // if(window.location.hash.length > 1){
+  //   let changeState;
+  //   [filters, changeState] = useState(atob(window.location.hash.split("#")[1]).split("/"))
+  //   onChange = (newFilters) => {
+  //     changeState(newFilters);
+  //     window.location.hash = '#'+btoa(newFilters.join("/").replace(/\/+$/, ""));
+  //   }
+  // } else {
+  //   [filters, onChange] = useLocalStorage("filters", []);
+  // }
+
+  const [storedFilters, storedChange] = useLocalStorage("filters", []);
+  const unwrapHash = (hash) => {
+    try {
+      return atob(hash.split("#")[1]).split("/")
+    } catch(err) {
+      return [];
     }
+  }
+  const wrapHash = (filters) => {
+    return '#'+btoa(filters.join("/").replace(/\/+$/, ""));
+  }
+  const [importFilters, importChange] = useState(unwrapHash(window.location.hash))
+  const hashChange = (newFilters) => {
+    importChange(newFilters);
+    window.location.hash = wrapHash(newFilters)
+  }
+  if(importFilters){
+    filters = importFilters;
+    onChange = hashChange;
   } else {
-    [filters, onChange] = useLocalStorage("filters", []);
+    filters = storedFilters;
+    onChange = storedChange;
   }
 
   const sanitizedInputFilters = useMemo(
