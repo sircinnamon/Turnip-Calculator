@@ -58,18 +58,19 @@ const ClearButton = (props) => {
   }
 };
 
-const DisableImportButton = (props) => {
-  if(!props.importMode){return;}
+const ShareButton = (props) => {
   const classes = useButtonStyles();
+  let passedprops = {...props};
+  delete passedprops.importMode
   return (
     <Button
       classes={classes}
       disableRipple
       size="small"
       variant="contained"
-      {...props}
+      {...passedprops}
     >
-      {i18n.t("Close Import")}
+      {i18n.t("Share")}
     </Button>
   );
 };
@@ -81,7 +82,7 @@ const names = [
     .reduce((curr, day) => [...curr, ...[`${day} ${i18n.t('AM')}`, `${day} ${i18n.t('PM')}`]], []),
 ];
 
-const Filter = ({ filters, onChange, importMode, clearImport }) => {
+const Filter = ({ filters, onChange, importMode, clearImport, share }) => {
   const handleChange = useCallback(
     (index) => ({
       target: {
@@ -159,6 +160,13 @@ const Filter = ({ filters, onChange, importMode, clearImport }) => {
         </Box>
       </FormGroup>
       <Box alignSelf="flex-end" mt={-2}>
+        <ShareButton
+          importMode={importMode}
+          style={{marginRight:"5px"}}
+          onClick={() => {
+            share();
+          }}
+        />
         <ClearButton
           clearSaved={() => {
             onChange([]);

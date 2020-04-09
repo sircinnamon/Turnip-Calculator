@@ -46,6 +46,15 @@ const App = () => {
     onChange = storedChange;
     window.location.hash = "";
   }
+  const share = useMemo(
+    () => {
+      return function(){
+        let hash = wrapHash(filters)
+        window.open("./"+hash, "Share","status=1,toolbar=1");
+      }
+    },
+    [filters]
+  );
 
   const sanitizedInputFilters = useMemo(
     () =>
@@ -75,7 +84,7 @@ const App = () => {
         <CssBaseline />
         <Container maxWidth="md">
           <Title />
-          <Filter filters={sanitizedInputFilters} onChange={onChange} importMode={importMode} clearImport={()=>{setImportMode(false)}}/>
+          <Filter filters={sanitizedInputFilters} onChange={onChange} importMode={importMode} clearImport={()=>{setImportMode(false)}} share={share}/>
           <Chart filter={sanitizedFilters} />
           <Footer />
         </Container>
