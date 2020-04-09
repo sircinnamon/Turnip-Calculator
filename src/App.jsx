@@ -37,7 +37,7 @@ const App = () => {
     importChange(newFilters);
     window.location.hash = wrapHash(newFilters)
   }
-  if(importFilters){
+  if(window.location.hash){
     filters = importFilters;
     onChange = hashChange;
   } else {
